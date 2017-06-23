@@ -1,6 +1,8 @@
 package com.planet.noobs.testproject.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
@@ -24,19 +26,22 @@ import com.planet.noobs.testproject.R;
  */
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String MyPREFERENCES = "MyPrefs";
+    public static final String Name = "nameKey";
+    public static final String Phone = "phoneKey";
+    public static final String Email = "emailKey";
     private NestedScrollView scrollView;
     private TextInputLayout textInputLayoutEmail;
     private TextInputLayout textInputLayoutPasswd;
-
     private TextInputEditText textInputEditTextEmail;
     private TextInputEditText textInputEditTextPasswd;
-
     private AppCompatButton btnLogin;
     private AppCompatTextView textViewRegister;
     private InputValidation inputValidation;
     private DBHelper dbHelper;
     private User user;
     private Spinner spinner;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         initListeners();
         initObjects();
 
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.userType, android.R.layout.simple_spinner_item);
@@ -142,6 +148,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Snackbar.make(scrollView, "Credentials not valid", Snackbar.LENGTH_SHORT).show();
             return false;
         }
+    }
+
+    private void storeInPreference() {
+
     }
 
     private void emptyInputEditText() {

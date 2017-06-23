@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.planet.noobs.testproject.Adapters.LecListAdapter;
 import com.planet.noobs.testproject.Data.DBHelper;
 import com.planet.noobs.testproject.Helpers.InputValidation;
@@ -106,19 +105,17 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
                 getDataFromSQLite();
                 break;
             case R.id.lec_fab:
-                addLecDialog();
+
         }
     }
 
     @TargetApi(Build.VERSION_CODES.N)
     public void getTime() {
         // Get Current Time
-
         final Calendar c;
         c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
         mMinute = c.get(Calendar.MINUTE);
-
         timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -168,14 +165,6 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    private void addLecDialog() {
-        new MaterialDialog.Builder(this)
-                .title("Add Lecture")
-                .content("Add details")
-                .positiveText("Time slot")
-                .negativeText("Save")
-                .show();
-    }
 
     private void emptyEditText() {
         editTextSubject.setText(null);
