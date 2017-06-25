@@ -24,43 +24,45 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     //database name
     private static final String DATABASE_NAME = "UserManager.db";
-    //table name
-    private static final String TABLE_STUDENT = "student";
 
+    //table name for student
+    private static final String TABLE_STUDENT = "student";
     //column's name
-    private static final String COLUMN_USER_ID = "user_id";
-    private static final String COLUMN_USER_NAME = "user_name";
-    private static final String COLUMN_CONTACT = "user_contact";
-    private static final String COLUMN_USER_EMAIL = "user_email";
-    private static final String COLUMN_USER_PASSWORD = "user_password";
+    private static final String COLUMN_STUDENT_ID = "student_id";
+    private static final String COLUMN_STUDENT_APPROVAL = "student_approval";
+    private static final String COLUMN_STUDENT_NAME = "student_name";
+    private static final String COLUMN_STUDENT_CONTACT = "student_contact";
+    private static final String COLUMN_STUDENT_EMAIL = "student_email";
+    private static final String COLUMN_STUDENT_PASSWORD = "student_password";
     //create table query
-    private static final String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_STUDENT + "(" +
-            COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COLUMN_USER_NAME + " TEXT, " +
-            COLUMN_CONTACT + " NUMBER, " +
-            COLUMN_USER_EMAIL + " TEXT, " +
-            COLUMN_USER_PASSWORD + " TEXT" + ")";
+    private static final String CREATE_STUDENT_TABLE = "CREATE TABLE " + TABLE_STUDENT + "(" +
+            COLUMN_STUDENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_STUDENT_APPROVAL + " NUMBER DEFAULT 0, " +
+            COLUMN_STUDENT_NAME + " TEXT, " +
+            COLUMN_STUDENT_CONTACT + " NUMBER, " +
+            COLUMN_STUDENT_EMAIL + " TEXT, " +
+            COLUMN_STUDENT_PASSWORD + " TEXT" + ")";
 
     //DROP TABLE IF EXISTS
-    private static final String DROP_USER_TABLE = "DROP TABLE IF EXISTS " + TABLE_STUDENT;
+    private static final String DROP_STUDENT_TABLE = "DROP TABLE IF EXISTS " + TABLE_STUDENT;
 
     //Column's name for Books
-
-/*
     private static final String TABLE_BOOKS = "books";
 
-    private static final String COLUMN_BOOK_ID = "user_id";
+    private static final String COLUMN_BOOK_ID = "book_id";
+    private static final String COLUMN_BOOK_ISSUED = "book_issued";
     private static final String COLUMN_BOOK_TITLE = "book_title";
-    private static final String COLUMN_BOOK_DESC = "book_desc";
+    private static final String COLUMN_BOOK_AUTHOR = "book_author";
     private static final String COLUMN_BOOK_ISSUE_DATE = "book_issue_date";
 
-    private static final String CREATE_BOOK_TABLE = "CREATE TABLE "+ TABLE_BOOKS + "(" +
-            COLUMN_BOOK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+ COLUMN_BOOK_ID +
-            " Text, "+ COLUMN_BOOK_TITLE + " Text, " + COLUMN_BOOK_ISSUE_DATE + " Text, " +
-            COLUMN_BOOK_DESC + " Text" + ")";
+    private static final String CREATE_BOOK_TABLE = "CREATE TABLE " + TABLE_BOOKS + "(" +
+            COLUMN_BOOK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_BOOK_ISSUED + " NUMBER DEFAULT 0, " +
+            COLUMN_BOOK_TITLE + " TEXT, " +
+            COLUMN_BOOK_ISSUE_DATE + " TEXT, " +
+            COLUMN_BOOK_AUTHOR + " TEXT" + ")";
 
     private static final String DROP_BOOKS_TABLE = "DROP TABLE IF EXISTS " + TABLE_BOOKS;
-*/
 
     // Columns name for lectures table
     // Table name
@@ -77,25 +79,66 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DROP_LECTURES_TABLE = "DROP TABLE IF EXISTS " + TABLE_LECTURES;
 
+    // teacher table
+    private static final String TABLE_TEACHER = "teacher";
+    //column's name
+    private static final String COLUMN_TEACHER_ID = "teacher_id";
+    private static final String COLUMN_TEACHER_APPROVAL = "teacher_approval";
+    private static final String COLUMN_TEACHER_NAME = "teacher_name";
+    private static final String COLUMN_TEACHER_CONTACT = "teacher_contact";
+    private static final String COLUMN_TEACHER_EMAIL = "teacher_email";
+    private static final String COLUMN_TEACHER_PASSWORD = "teacher_password";
+    //create table query
+    private static final String CREATE_TEACHER_TABLE = "CREATE TABLE " + TABLE_TEACHER + "(" +
+            COLUMN_TEACHER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_TEACHER_APPROVAL + " NUMBER DEFAULT 0, " +
+            COLUMN_TEACHER_NAME + " TEXT, " +
+            COLUMN_TEACHER_CONTACT + " NUMBER, " +
+            COLUMN_TEACHER_EMAIL + " TEXT, " +
+            COLUMN_TEACHER_PASSWORD + " TEXT" + ")";
+
+    //DROP TABLE IF EXISTS
+    private static final String DROP_TEACHER_TABLE = "DROP TABLE IF EXISTS " + TABLE_TEACHER;
+
+    // department table
+    private static final String TABLE_DEPT = "department";
+    //column's name
+    private static final String COLUMN_DEPT_ID = "dept_id";
+    private static final String COLUMN_DEPT_APPROVAL = "dept_approval";
+    private static final String COLUMN_DEPT_NAME = "dept_name";
+    private static final String COLUMN_DEPT_CONTACT = "dept_contact";
+    private static final String COLUMN_DEPT_EMAIL = "dept_email";
+    private static final String COLUMN_DEPT_PASSWORD = "dept_password";
+    //create table query
+    private static final String CREATE_DEPT_TABLE = "CREATE TABLE " + TABLE_DEPT + "(" +
+            COLUMN_DEPT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_DEPT_APPROVAL + " NUMBER DEFAULT 0, " +
+            COLUMN_DEPT_NAME + " TEXT, " +
+            COLUMN_DEPT_CONTACT + " NUMBER, " +
+            COLUMN_DEPT_EMAIL + " TEXT, " +
+            COLUMN_DEPT_PASSWORD + " TEXT" + ")";
+
+    //DROP TABLE IF EXISTS
+    private static final String DROP_DEPT_TABLE = "DROP TABLE IF EXISTS " + TABLE_DEPT;
+
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_USER_TABLE);
+        db.execSQL(CREATE_STUDENT_TABLE);
         db.execSQL(CREATE_LECTURES_TABLE);
-
+        db.execSQL(CREATE_TEACHER_TABLE);
+        db.execSQL(CREATE_DEPT_TABLE);
+        db.execSQL(CREATE_BOOK_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // drop student table if exist
-/*
-        db.execSQL(DROP_USER_TABLE);
-        db.execSQL(DROP_LECTURES_TABLE);
-*/
+//        db.execSQL(DROP_STUDENT_TABLE);
         onCreate(db);
     }
     // Lectures helper methods
@@ -113,6 +156,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public List getAllLec() {
         String[] COLUMNS = {
+                COLUMN_LEC_ID,
                 COLUMN_LEC_SUBJECT,
                 COLUMN_TIME
         };
@@ -134,6 +178,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Lectures lec = new Lectures();
+                lec.setLecId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_LEC_ID))));
                 lec.setLecTitle(cursor.getString(cursor.getColumnIndex(COLUMN_LEC_SUBJECT)));
                 lec.setLecDateTime(cursor.getString(cursor.getColumnIndex(COLUMN_TIME)));
                 lecList.add(lec);
@@ -144,19 +189,28 @@ public class DBHelper extends SQLiteOpenHelper {
         return lecList;
     }
 
-    public List<User> getAllUser() {
+    public void deleteLec(Lectures lec) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(TABLE_LECTURES, COLUMN_LEC_ID + " = ?",
+                new String[]{String.valueOf(lec.getLecId())});
+        db.close();
+    }
+
+    public List<User> getAllStudent() {
         //columns to be fetched
         String[] columns = {
-                COLUMN_USER_ID,
-                COLUMN_USER_EMAIL,
-                COLUMN_CONTACT,
-                COLUMN_USER_NAME,
-                COLUMN_USER_PASSWORD
+                COLUMN_STUDENT_ID,
+                COLUMN_STUDENT_APPROVAL,
+                COLUMN_STUDENT_EMAIL,
+                COLUMN_STUDENT_CONTACT,
+                COLUMN_STUDENT_NAME,
+                COLUMN_STUDENT_PASSWORD
         };
         SQLiteDatabase db = this.getReadableDatabase();
         List<User> userList = new ArrayList<User>();
 
-        String sortOrder = COLUMN_USER_NAME + " ASC";
+        String sortOrder = COLUMN_STUDENT_NAME + " ASC";
         Cursor cursor = db.query(
                 TABLE_STUDENT,
                 columns,
@@ -170,11 +224,11 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 User user = new User();
-                user.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_USER_ID))));
-                user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_USER_NAME)));
-                user.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_USER_EMAIL)));
-                user.setContact(Long.parseLong(cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT))));
-                user.setPasswd(cursor.getString(cursor.getColumnIndex(COLUMN_USER_PASSWORD)));
+                user.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_ID))));
+                user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_NAME)));
+                user.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_EMAIL)));
+                user.setContact(Long.parseLong(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_CONTACT))));
+                user.setPasswd(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_PASSWORD)));
                 userList.add(user);
             } while (cursor.moveToNext());
         }
@@ -183,17 +237,16 @@ public class DBHelper extends SQLiteOpenHelper {
         return userList;
     }
 
-
-    // user helpers
-    public void addUser(User user) {
+    // Student helpers methods
+    public void addStudent(User user) {
         //open database with write permission
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_USER_NAME, user.getName());
-        values.put(COLUMN_USER_EMAIL, user.getEmail());
-        values.put(COLUMN_USER_PASSWORD, user.getPasswd());
-        values.put(COLUMN_CONTACT, user.getContact());
+        values.put(COLUMN_STUDENT_NAME, user.getName());
+        values.put(COLUMN_STUDENT_EMAIL, user.getEmail());
+        values.put(COLUMN_STUDENT_PASSWORD, user.getPasswd());
+        values.put(COLUMN_STUDENT_CONTACT, user.getContact());
 
         db.insert(TABLE_STUDENT, null, values);
         db.close();
@@ -204,23 +257,24 @@ public class DBHelper extends SQLiteOpenHelper {
      *
      * @param user
      */
-    public void deleteUser(User user) {
+    public void deleteStudent(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         // delete user record by id
-        db.delete(TABLE_STUDENT, COLUMN_USER_ID + " = ?",
+        db.delete(TABLE_STUDENT, COLUMN_STUDENT_ID + " = ?",
                 new String[]{String.valueOf(user.getId())});
         db.close();
     }
 
-    public boolean checkUser(String email) {
+
+    public boolean checkStudent(String email) {
         //columns to be fetched
         String[] columns = {
-                COLUMN_USER_ID
+                COLUMN_STUDENT_ID
         };
 
         SQLiteDatabase db = this.getReadableDatabase();
         //selection criteria in where clause
-        String selection = COLUMN_USER_EMAIL + " = ?";
+        String selection = COLUMN_STUDENT_EMAIL + " = ?" + " AND " + COLUMN_STUDENT_APPROVAL + " = 1";
         //selection arguments
         String[] selection_arg = {
                 email
@@ -244,19 +298,22 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean checkUser(String email, String passwd) {
+    public boolean checkStudent(String email, String passwd) {
         //columns to be fetched
         String[] columns = {
-                COLUMN_USER_ID
+                COLUMN_STUDENT_ID
         };
+
 
         SQLiteDatabase db = this.getReadableDatabase();
         //selection criteria in where clause
-        String selection = COLUMN_USER_EMAIL + " = ?" + " AND " + COLUMN_USER_PASSWORD + " = ?";
+        String selection = COLUMN_STUDENT_EMAIL + " = ?" + " AND " +
+                COLUMN_STUDENT_PASSWORD + " = ?" + " AND " +
+                COLUMN_STUDENT_APPROVAL + " = 1";
         //selection arguments
         String[] selection_arg = {
                 email,
-                passwd
+                passwd,
         };
 
         Cursor cursor = db.query(
