@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,6 +10,7 @@
         android:id="@+id/parent_addlec"
         android:layout_width="match_parent"
         android:layout_height="120dp"
+
         android:orientation="vertical">
 
         <android.support.design.widget.TextInputLayout
@@ -73,24 +74,29 @@
         android:textSize="25sp"
         android:textStyle="bold" />
 
-    <RelativeLayout
+    <com.planet.noobs.testproject.Helpers.EmptyRecyclerView
+        android:id="@+id/recyclerview_lectures"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/listview_lectures"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <ImageView
+        android:id="@+id/empty_image_lec"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:contentDescription="empty_state"
+        android:src="@drawable/empty_state" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/lec_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/listview_lectures"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_plus" />
+    <!--
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/lec_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/listview_lectures"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@drawable/ic_plus" />
+    -->
 
-    </RelativeLayout>
-</LinearLayout>
+</android.support.v7.widget.LinearLayoutCompat>

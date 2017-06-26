@@ -10,9 +10,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.planet.noobs.testproject.Adapters.BooksListAdapter;
+import com.planet.noobs.testproject.Helpers.EmptyRecyclerView;
 import com.planet.noobs.testproject.Helpers.RecyclerItemClickListener;
 import com.planet.noobs.testproject.R;
 
@@ -28,9 +30,10 @@ public class BooksListActivity extends AppCompatActivity {
     private AppCompatTextView textViewBookName;
     private List<String> bookList;
     private BooksListAdapter booksListAdapter;
-    private RecyclerView mrecyclerViewBooks;
+    //private RecyclerView mrecyclerViewBooks;
     private AppCompatImageView ImageViewBook;
-
+    private EmptyRecyclerView mrecyclerViewBooks;
+    private ImageView empty_State;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +51,9 @@ public class BooksListActivity extends AppCompatActivity {
 
     private void initViews() {
         textViewBookName = (AppCompatTextView) findViewById(R.id.item_Book_name);
-        mrecyclerViewBooks = (RecyclerView) findViewById(R.id.recyclerviewBooks);
+        //mrecyclerViewBooks = (RecyclerView) findViewById(R.id.recyclerviewBooks);
+        mrecyclerViewBooks = (EmptyRecyclerView) findViewById(R.id.recyclerviewBooks);
+        empty_State = (ImageView) findViewById(R.id.empty_image_books);
     }
 
     private void initObjects() {
@@ -62,6 +67,8 @@ public class BooksListActivity extends AppCompatActivity {
         mrecyclerViewBooks.setItemAnimator(new DefaultItemAnimator());
         mrecyclerViewBooks.setHasFixedSize(true);
         mrecyclerViewBooks.setAdapter(booksListAdapter);
+        // emptyview set after settingAdapter due to dummydata
+        mrecyclerViewBooks.setEmptyView(findViewById(R.id.empty_image_books));
 
         mrecyclerViewBooks.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {

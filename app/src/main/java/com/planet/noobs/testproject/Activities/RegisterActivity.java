@@ -9,7 +9,11 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.planet.noobs.testproject.Data.DBHelper;
 import com.planet.noobs.testproject.Helpers.InputValidation;
@@ -21,6 +25,7 @@ import com.planet.noobs.testproject.R;
  */
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String LOG_TAG = RegisterActivity.class.getSimpleName();
 
     private NestedScrollView scrollView;
     private TextInputLayout textInputLayoutEmail;
@@ -41,13 +46,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private InputValidation inputValidation;
     private DBHelper dbHelper;
     private User user;
-
+    private Spinner spinner_register;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        getSupportActionBar().hide();
 
         initViews();
         initListeners();
@@ -62,7 +66,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         textInputLayoutName = (TextInputLayout) findViewById(R.id.textInputLayoutName);
         textInputLayoutConfirmPasswd = (TextInputLayout) findViewById(R.id.textInputLayoutConfirmPasswd);
 
-
         textInputEditTextEmail = (TextInputEditText) findViewById(R.id.email);
         textInputEditTextPasswd = (TextInputEditText) findViewById(R.id.passwd);
         textInputEditTextName = (TextInputEditText) findViewById(R.id.name);
@@ -71,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         btnRegister = (AppCompatButton) findViewById(R.id.btn_signup);
         textViewLogin = (AppCompatTextView) findViewById(R.id.textViewLogin);
+        spinner_register = (Spinner) findViewById(R.id.spinner_register);
     }
 
     /**
@@ -85,6 +89,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         dbHelper = new DBHelper(RegisterActivity.this);
         inputValidation = new InputValidation(RegisterActivity.this);
         user = new User();
+
+        ArrayAdapter<CharSequence> spinner_data = ArrayAdapter.createFromResource(this, R.array.userType,
+                R.layout.spinner_item);
+        spinner_data.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner_register.setAdapter(spinner_data);
+        spinner_register.setSelection(spinner_data.getPosition("Student"), true);
+        spinner_register.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.v(LOG_TAG, "Spinner selected position " + position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                spinner_register.setSelection(parent.getFirstVisiblePosition(), true);
+            }
+        });
+
     }
 
     @Override
@@ -121,13 +143,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-        if (!dbHelper.checkUser(textInputEditTextEmail.getText().toString().trim())) {
+        if (!dbHelper.checkStudent(textInputEditTextEmail.getText().toString().trim())) {
             user.setContact(Long.parseLong(textInputEditTextContact.getText().toString().trim()));
             user.setEmail(textInputEditTextEmail.getText().toString().trim());
             user.setName(textInputEditTextName.getText().toString().trim());
             user.setPasswd(textInputEditTextPasswd.getText().toString().trim());
 
-            dbHelper.addUser(user);
+            dbHelper.addStudent(user);
 
             Snackbar.make(scrollView, "Registered successfully", Snackbar.LENGTH_LONG).show();
             emptyInputEditText();

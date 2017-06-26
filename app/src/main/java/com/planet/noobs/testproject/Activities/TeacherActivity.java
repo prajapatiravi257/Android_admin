@@ -6,7 +6,6 @@ import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -17,12 +16,14 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.planet.noobs.testproject.Adapters.LecListAdapter;
 import com.planet.noobs.testproject.Data.DBHelper;
+import com.planet.noobs.testproject.Helpers.EmptyRecyclerView;
 import com.planet.noobs.testproject.Helpers.InputValidation;
 import com.planet.noobs.testproject.Model.Lectures;
 import com.planet.noobs.testproject.R;
@@ -39,8 +40,8 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
     private AppCompatTextView textViewTime;
     private AppCompatButton appCompatButtonSave;
     private TimePickerDialog timePickerDialog;
-    private RecyclerView recyclerViewLec;
-    private FloatingActionButton fab;
+    //private RecyclerView recyclerViewLec;
+    //private FloatingActionButton fab;
     private int mHour, mMinute;
     private Lectures lectures;
     private InputValidation inputValidation;
@@ -48,12 +49,13 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
     private boolean gotTime = false;
     private List<Lectures> lecturesList;
     private LinearLayout addLecParent;
+    private ImageView empty_statview;
+    private EmptyRecyclerView recyclerViewLec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher);
-        getSupportActionBar();
 
         intiViews();
         initListeners();
@@ -66,15 +68,18 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
         textInputLayoutSubject = (TextInputLayout) findViewById(R.id.textInputLayoutSubject);
         editTextSubject = (TextInputEditText) findViewById(R.id.appCompatEditTextSubject);
         appCompatButtonSave = (AppCompatButton) findViewById(R.id.appCompatButtonSave);
-        recyclerViewLec = (RecyclerView) findViewById(R.id.listview_lectures);
-        fab = (FloatingActionButton) findViewById(R.id.lec_fab);
+        //recyclerViewLec = (RecyclerView) findViewById(R.id.recyclerview_lectures);
+        //fab = (FloatingActionButton) findViewById(R.id.lec_fab);
         addLecParent = (LinearLayout) findViewById(R.id.parent_addlec);
+        empty_statview = (ImageView) findViewById(R.id.empty_image_lec);
+        recyclerViewLec = (EmptyRecyclerView) findViewById(R.id.recyclerview_lectures);
+        recyclerViewLec.setEmptyView(findViewById(R.id.empty_image_lec));
     }
 
     private void initListeners() {
         appCompatButtonSave.setOnClickListener(this);
         buttonTimeSlot.setOnClickListener(this);
-        fab.setOnClickListener(this);
+//        fab.setOnClickListener(this);
     }
 
     private void initObjects() {
@@ -86,12 +91,12 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
         recyclerViewLec.setLayoutManager(mLayoutManager);
         recyclerViewLec.setItemAnimator(new DefaultItemAnimator());
         recyclerViewLec.setHasFixedSize(true);
+        dbHelper = new DBHelper(this);
 
         listAdapter = new LecListAdapter(lecturesList);
         recyclerViewLec.setAdapter(listAdapter);
-        dbHelper = new DBHelper(this);
-        //refreshItems();
         getDataFromSQLite();
+
     }
 
     @Override
@@ -104,7 +109,7 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
                 postDataToDB();
                 getDataFromSQLite();
                 break;
-            case R.id.lec_fab:
+            // case R.id.lec_fab:
 
         }
     }

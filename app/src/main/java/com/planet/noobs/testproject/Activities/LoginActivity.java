@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private InputValidation inputValidation;
     private DBHelper dbHelper;
     private User user;
-    private Spinner spinner;
+    private Spinner spinner_login;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -53,20 +53,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         initObjects();
 
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        // Create an ArrayAdapter using the string array and a default spinner layout
+        // Create an ArrayAdapter using the string array and a default spinner_login layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.userType, android.R.layout.simple_spinner_item);
+                R.array.userType, R.layout.spinner_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(adapter.getPosition(getResources().getString(R.string.default_spinner_selection)), true);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner_login.setAdapter(adapter);
+        spinner_login.setSelection(adapter.getPosition(getResources().getString(R.string.default_spinner_selection)), true);
+        spinner_login.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                spinner.setSelection(parent.getFirstVisiblePosition(), true);
+                spinner_login.setSelection(parent.getFirstVisiblePosition(), true);
             }
         });
 
@@ -79,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         textInputEditTextEmail = (TextInputEditText) findViewById(R.id.email);
         textInputEditTextPasswd = (TextInputEditText) findViewById(R.id.passwd);
-        spinner = (Spinner) findViewById(R.id.spinner);
+        spinner_login = (Spinner) findViewById(R.id.spinner_login);
         btnLogin = (AppCompatButton) findViewById(R.id.btn_signin);
         textViewRegister = (AppCompatTextView) findViewById(R.id.textViewRegister);
     }
@@ -104,19 +105,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 //login usertype with spinners
                 if (verifyFromDB()) {
 
-                    if (spinner.getSelectedItemPosition() == 0) {
+                    if (spinner_login.getSelectedItemPosition() == 0) {
                         Intent studentIntent = new Intent(getApplicationContext(), StudentActivity.class);
                         startActivity(studentIntent);
                     }
-                    if (spinner.getSelectedItemPosition() == 1) {
+                    if (spinner_login.getSelectedItemPosition() == 1) {
                         Intent teacherIntent = new Intent(getApplicationContext(), TeacherActivity.class);
                         startActivity(teacherIntent);
                     }
-                    if (spinner.getSelectedItemPosition() == 2) {
+                    if (spinner_login.getSelectedItemPosition() == 2) {
                         Intent deptIntent = new Intent(getApplicationContext(), DepartmentActivity.class);
                         startActivity(deptIntent);
                     }
-                    if (spinner.getSelectedItemPosition() == 3) {
+                    if (spinner_login.getSelectedItemPosition() == 3) {
                         Intent adminIntent = new Intent(getApplicationContext(), AdminActivity.class);
                         startActivity(adminIntent);
                     }
@@ -139,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (!inputValidation.isInputEditTextFilled(textInputEditTextPasswd, textInputLayoutPasswd, getString(R.string.error_field_required))) {
             return false;
         }
-        if (dbHelper.checkUser(textInputEditTextEmail.getText().toString().trim(),
+        if (dbHelper.checkStudent(textInputEditTextEmail.getText().toString().trim(),
                 textInputEditTextPasswd.getText().toString().trim())) {
             emptyInputEditText();
             Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
@@ -148,10 +149,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Snackbar.make(scrollView, "Credentials not valid", Snackbar.LENGTH_SHORT).show();
             return false;
         }
-    }
-
-    private void storeInPreference() {
-
     }
 
     private void emptyInputEditText() {

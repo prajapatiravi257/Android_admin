@@ -197,24 +197,20 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<User> getAllStudent() {
+    public List<User> getAllUnapprovedStudent() {
         //columns to be fetched
         String[] columns = {
-                COLUMN_STUDENT_ID,
-                COLUMN_STUDENT_APPROVAL,
-                COLUMN_STUDENT_EMAIL,
-                COLUMN_STUDENT_CONTACT,
                 COLUMN_STUDENT_NAME,
-                COLUMN_STUDENT_PASSWORD
         };
         SQLiteDatabase db = this.getReadableDatabase();
         List<User> userList = new ArrayList<User>();
 
+        String selection = COLUMN_STUDENT_APPROVAL + " = 0";
         String sortOrder = COLUMN_STUDENT_NAME + " ASC";
         Cursor cursor = db.query(
                 TABLE_STUDENT,
                 columns,
-                null,
+                selection,
                 null,
                 null,
                 null,
@@ -224,11 +220,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 User user = new User();
-                user.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_ID))));
-                user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_NAME)));
-                user.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_EMAIL)));
-                user.setContact(Long.parseLong(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_CONTACT))));
-                user.setPasswd(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_PASSWORD)));
+                user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_STUDENT_EMAIL)));
                 userList.add(user);
             } while (cursor.moveToNext());
         }
@@ -252,6 +244,34 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void addDept(User user) {
+        //open database with write permission
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DEPT_NAME, user.getName());
+        values.put(COLUMN_DEPT_EMAIL, user.getEmail());
+        values.put(COLUMN_DEPT_PASSWORD, user.getPasswd());
+        values.put(COLUMN_DEPT_CONTACT, user.getContact());
+
+        db.insert(TABLE_DEPT, null, values);
+        db.close();
+    }
+
+    public void addTeacher(User user) {
+        //open database with write permission
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TEACHER_NAME, user.getName());
+        values.put(COLUMN_TEACHER_EMAIL, user.getEmail());
+        values.put(COLUMN_TEACHER_PASSWORD, user.getPasswd());
+        values.put(COLUMN_TEACHER_CONTACT, user.getContact());
+
+        db.insert(TABLE_TEACHER, null, values);
+        db.close();
+    }
+
     /**
      * This method is to delete user record
      *
@@ -264,7 +284,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(user.getId())});
         db.close();
     }
-
 
     public boolean checkStudent(String email) {
         //columns to be fetched
@@ -309,7 +328,7 @@ public class DBHelper extends SQLiteOpenHelper {
         //selection criteria in where clause
         String selection = COLUMN_STUDENT_EMAIL + " = ?" + " AND " +
                 COLUMN_STUDENT_PASSWORD + " = ?" + " AND " +
-                COLUMN_STUDENT_APPROVAL + " = 1";
+                COLUMN_STUDENT_APPROVAL + " = 0";
         //selection arguments
         String[] selection_arg = {
                 email,
@@ -331,7 +350,79 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return count > 0;
+    }
+
+    public boolean checkDept(String email, String passwd) {
+        //columns to be fetched
+        String[] columns = {
+                COLUMN_DEPT_ID
+        };
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        //selection criteria in where clause
+        String selection = COLUMN_DEPT_EMAIL + " = ?" + " AND " +
+                COLUMN_DEPT_PASSWORD + " = ?" + " AND " +
+                COLUMN_DEPT_APPROVAL + " = 1";
+        //selection arguments
+        String[] selection_arg = {
+                email,
+                passwd,
+        };
+
+        Cursor cursor = db.query(
+                TABLE_DEPT, // table name
+                columns,       // columns to return
+                selection,     // Where clause selection
+                selection_arg, //Where clause selection value
+                null,
+                null,
+                null
+        );
+
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        return count > 0;
 
     }
+
+    public boolean checkTeacher(String email, String passwd) {
+        //columns to be fetched
+        String[] columns = {
+                COLUMN_TEACHER_ID
+        };
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        //selection criteria in where clause
+        String selection = COLUMN_TEACHER_EMAIL + " = ?" + " AND " +
+                COLUMN_TEACHER_EMAIL + " = ?" + " AND " +
+                COLUMN_TEACHER_APPROVAL + " = 1";
+        //selection arguments
+        String[] selection_arg = {
+                email,
+                passwd,
+        };
+
+        Cursor cursor = db.query(
+                TABLE_TEACHER, // table name
+                columns,       // columns to return
+                selection,     // Where clause selection
+                selection_arg, //Where clause selection value
+                null,
+                null,
+                null
+        );
+
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        return count > 0;
+
+    }
+
 
 }

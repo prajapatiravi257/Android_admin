@@ -5,10 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import com.planet.noobs.testproject.Helpers.EmptyRecyclerView;
 import com.planet.noobs.testproject.Helpers.InputValidation;
 import com.planet.noobs.testproject.R;
 
@@ -19,7 +19,7 @@ import com.planet.noobs.testproject.R;
 public class AdminActivity extends AppCompatActivity implements View.OnClickListener {
     private Button buttonAddept;
     private TextInputEditText editTextdept;
-    private RecyclerView recyclerViewHods;
+    private EmptyRecyclerView recyclerViewHods;
     private TextInputLayout inputLayoutDept;
     private InputValidation inputValidation;
 
@@ -37,6 +37,7 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
         editTextdept = (TextInputEditText) findViewById(R.id.editTextDept);
         inputLayoutDept = (TextInputLayout) findViewById(R.id.textInputLayoutDept);
         buttonAddept = (Button) findViewById(R.id.addDept);
+        recyclerViewHods = (EmptyRecyclerView) findViewById(R.id.recyclerviewHods);
     }
 
     private void initListners() {

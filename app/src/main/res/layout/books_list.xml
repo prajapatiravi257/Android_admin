@@ -27,10 +27,18 @@
             android:textSize="20sp" />
     </android.support.v7.widget.LinearLayoutCompat>
 
-    <android.support.v7.widget.RecyclerView
+    <com.planet.noobs.testproject.Helpers.EmptyRecyclerView
         android:id="@+id/recyclerviewBooks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp" />
+
+    <ImageView
+        android:id="@+id/empty_image_books"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="empty_State"
+        android:src="@drawable/empty_state" />
 
 </LinearLayout>
