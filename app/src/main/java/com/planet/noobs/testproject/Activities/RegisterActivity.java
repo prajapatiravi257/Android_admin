@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.planet.noobs.testproject.Data.DBHelper;
 import com.planet.noobs.testproject.Helpers.InputValidation;
@@ -142,17 +143,41 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 textInputLayoutConfirmPasswd, "Password Don't match!")) {
             return;
         }
+        //registration bug for existing email id in other tables
 
-        if (!dbHelper.checkStudent(textInputEditTextEmail.getText().toString().trim())) {
+        if (!dbHelper.checkStudentEmail(textInputEditTextEmail.getText().toString().trim()) &&
+                !dbHelper.checkTeacherEmail(textInputEditTextEmail.getText().toString().trim()) &&
+                !dbHelper.checkDeptEmail(textInputEditTextEmail.getText().toString().trim()) &&
+                !dbHelper.checkAdminEmail(textInputEditTextEmail.getText().toString().trim())) {
+
             user.setContact(Long.parseLong(textInputEditTextContact.getText().toString().trim()));
             user.setEmail(textInputEditTextEmail.getText().toString().trim());
             user.setName(textInputEditTextName.getText().toString().trim());
             user.setPasswd(textInputEditTextPasswd.getText().toString().trim());
 
-            dbHelper.addStudent(user);
 
-            Snackbar.make(scrollView, "Registered successfully", Snackbar.LENGTH_LONG).show();
-            emptyInputEditText();
+            switch (spinner_register.getSelectedItemPosition()) {
+                case 0:
+                    dbHelper.addStudent(user);
+                    Snackbar.make(scrollView, "Registered successfully", Snackbar.LENGTH_LONG).show();
+                    emptyInputEditText();
+                    break;
+                case 1:
+                    dbHelper.addTeacher(user);
+                    Snackbar.make(scrollView, "Registered successfully", Snackbar.LENGTH_LONG).show();
+                    emptyInputEditText();
+                    break;
+                case 2:
+                    dbHelper.addDept(user);
+                    Snackbar.make(scrollView, "Registered successfully", Snackbar.LENGTH_LONG).show();
+                    emptyInputEditText();
+                    break;
+                case 3:
+                    Toast.makeText(this, "Admin already exist, Good try :)", Toast.LENGTH_SHORT).show();
+                    emptyInputEditText();
+                    break;
+            }
+
         } else {
             Snackbar.make(scrollView, "Email already exists", Snackbar.LENGTH_LONG).show();
         }

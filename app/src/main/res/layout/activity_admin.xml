@@ -1,64 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/md_grey_100"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:orientation="vertical">
-
-        <LinearLayout
+    <!--
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputLayoutDept"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/editTextDept"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:hint="Department" />
-            </android.support.design.widget.TextInputLayout>
-
-            <Button
-                android:id="@+id/addDept"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Add" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/cardview_dark_background" />
-
-        <TextView
-            android:id="@+id/approve_hod"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="HOD Request's"
+            android:layout_height="150dp"
+            android:layout_above="@id/swipe_refresh_layout"
+            android:layout_gravity="center_vertical"
+            android:text="Request's"
             android:textAlignment="center"
-            android:textSize="20sp"
+            android:textColor="#fff"
+            android:gravity="center_vertical"
+            android:textSize="40sp"
             android:textStyle="bold" />
+    -->
 
-    </LinearLayout>
+    <com.marshalchen.ultimaterecyclerview.ui.VerticalSwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
+        <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
         android:id="@+id/recyclerviewHods"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_below="@id/approve_hod_header"
+            app:recyclerviewEmptyView="@layout/empty_state" />
+
+    </com.marshalchen.ultimaterecyclerview.ui.VerticalSwipeRefreshLayout>
+
+    <com.marshalchen.ultimaterecyclerview.ui.floatingactionbutton.AddFloatingActionButton
+        android:id="@+id/fab_addDept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp" />
+</RelativeLayout>

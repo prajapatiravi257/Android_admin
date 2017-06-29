@@ -19,13 +19,26 @@
     <string name="text_already_member">Already registered! Login Me.</string>
     <string name="action_sign_up">Register</string>
 
-    <array name="userType">
+
+    <string-array name="userType">
         <item>Student</item>
         <item>Teacher</item>
         <item>Department</item>
         <item>Admin</item>
-    </array>
-    <string name="default_spinner_selection">Student</string>
+    </string-array>
+
+    <string-array name="lecTime">
+        <item>7.30 - 8.45</item>
+        <item>8.45 - 9.30</item>
+        <item>9.30 - 10.45</item>
+        <item>10.45 - 11.30</item>
+        <item>11.30 - 12.45</item>
+        <item>12.45 - 01.30</item>
+    </string-array>
+
+    <string name="default_spinner_lecTime_selection">7.30 - 8.45</string>
+    <string name="default_spinner_usertype_selection">Student</string>
+
     <string name="title_activity_student">Student</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

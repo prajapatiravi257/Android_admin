@@ -1,8 +1,6 @@
 package com.planet.noobs.testproject.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
@@ -26,10 +24,6 @@ import com.planet.noobs.testproject.R;
  */
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final String MyPREFERENCES = "MyPrefs";
-    public static final String Name = "nameKey";
-    public static final String Phone = "phoneKey";
-    public static final String Email = "emailKey";
     private NestedScrollView scrollView;
     private TextInputLayout textInputLayoutEmail;
     private TextInputLayout textInputLayoutPasswd;
@@ -41,28 +35,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private DBHelper dbHelper;
     private User user;
     private Spinner spinner_login;
-    private SharedPreferences sharedPreferences;
+    private SessionManagement session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //session manager
+        session = new SessionManagement(getApplicationContext());
+
         initViews();
         initListeners();
         initObjects();
 
-        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         // Create an ArrayAdapter using the string array and a default spinner_login layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.userType, R.layout.spinner_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner_login.setAdapter(adapter);
-        spinner_login.setSelection(adapter.getPosition(getResources().getString(R.string.default_spinner_selection)), true);
+        spinner_login.setSelection(adapter.getPosition(getResources().getString(R.string.default_spinner_usertype_selection)), true);
         spinner_login.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
             }
 
             @Override
@@ -72,12 +67,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
 
     }
+/*
+    private void saveIntoPref(User user){
+        editor.putString("userName",user.getName());
+        editor.putString("userEmail",user.getEmail());
+        editor.commit();
+    }
+*/
 
     private void initViews() {
         scrollView = (NestedScrollView) findViewById(R.id.login_form_scrollview);
         textInputLayoutEmail = (TextInputLayout) findViewById(R.id.textInputLayoutEmail);
         textInputLayoutPasswd = (TextInputLayout) findViewById(R.id.textInputLayoutPasswd);
-
         textInputEditTextEmail = (TextInputEditText) findViewById(R.id.email);
         textInputEditTextPasswd = (TextInputEditText) findViewById(R.id.passwd);
         spinner_login = (Spinner) findViewById(R.id.spinner_login);
@@ -103,25 +104,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.btn_signin:
                 //login usertype with spinners
-                if (verifyFromDB()) {
-
-                    if (spinner_login.getSelectedItemPosition() == 0) {
-                        Intent studentIntent = new Intent(getApplicationContext(), StudentActivity.class);
-                        startActivity(studentIntent);
-                    }
-                    if (spinner_login.getSelectedItemPosition() == 1) {
-                        Intent teacherIntent = new Intent(getApplicationContext(), TeacherActivity.class);
-                        startActivity(teacherIntent);
-                    }
-                    if (spinner_login.getSelectedItemPosition() == 2) {
-                        Intent deptIntent = new Intent(getApplicationContext(), DepartmentActivity.class);
-                        startActivity(deptIntent);
-                    }
-                    if (spinner_login.getSelectedItemPosition() == 3) {
-                        Intent adminIntent = new Intent(getApplicationContext(), AdminActivity.class);
-                        startActivity(adminIntent);
-                    }
-                }
+                verifyFromDB();
                 break;
             case R.id.textViewRegister:
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
@@ -130,26 +113,62 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private boolean verifyFromDB() {
+    private void verifyFromDB() {
         if (!inputValidation.isInputEditTextFilled(textInputEditTextEmail, textInputLayoutEmail, getString(R.string.error_field_required))) {
-            return false;
+            return;
         }
         if (!inputValidation.isInputEditTextEmail(textInputEditTextEmail, textInputLayoutEmail, "Email ID not valid")) {
-            return false;
+            return;
         }
         if (!inputValidation.isInputEditTextFilled(textInputEditTextPasswd, textInputLayoutPasswd, getString(R.string.error_field_required))) {
-            return false;
+            return;
         }
-        if (dbHelper.checkStudent(textInputEditTextEmail.getText().toString().trim(),
+
+        String name, email;
+        email = textInputEditTextEmail.getText().toString().trim();
+        name = email.substring(0, email.indexOf("@"));
+
+        if (spinner_login.getSelectedItemPosition() == 0 && dbHelper.checkStudent(email,
                 textInputEditTextPasswd.getText().toString().trim())) {
+
+            session.createLoginSession(name, email);
             emptyInputEditText();
+
+            Intent studentIntent = new Intent(getApplicationContext(), StudentActivity.class);
+            startActivity(studentIntent);
             Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
-            return true;
+
+        } else if (spinner_login.getSelectedItemPosition() == 1 && dbHelper.checkTeacher(email,
+                textInputEditTextPasswd.getText().toString().trim())) {
+
+            session.createLoginSession(name, email);
+            emptyInputEditText();
+            Intent teacherIntent = new Intent(getApplicationContext(), TeacherActivity.class);
+            startActivity(teacherIntent);
+            Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
+
+        } else if (spinner_login.getSelectedItemPosition() == 2 && dbHelper.checkDept(email,
+                textInputEditTextPasswd.getText().toString().trim())) {
+
+            session.createLoginSession(name, email);
+            emptyInputEditText();
+            Intent deptIntent = new Intent(getApplicationContext(), DepartmentActivity.class);
+            startActivity(deptIntent);
+            Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
+
+        } else if (spinner_login.getSelectedItemPosition() == 3 && dbHelper.checkAdmin(email,
+                textInputEditTextPasswd.getText().toString().trim())) {
+
+            session.createLoginSession(name, email);
+            emptyInputEditText();
+            Intent adminIntent = new Intent(getApplicationContext(), AdminActivity.class);
+            startActivity(adminIntent);
+            Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
         } else {
             Snackbar.make(scrollView, "Credentials not valid", Snackbar.LENGTH_SHORT).show();
-            return false;
         }
     }
+
 
     private void emptyInputEditText() {
         textInputEditTextEmail.setText(null);

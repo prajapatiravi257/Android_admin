@@ -9,9 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
+import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.planet.noobs.testproject.Adapters.DeptListAdapter;
 import com.planet.noobs.testproject.Data.DBHelper;
-import com.planet.noobs.testproject.Helpers.EmptyRecyclerView;
 import com.planet.noobs.testproject.Model.User;
 import com.planet.noobs.testproject.R;
 
@@ -24,8 +24,8 @@ import java.util.List;
 
 public class DepartmentActivity extends AppCompatActivity {
 
-    private EmptyRecyclerView recyclerViewReqList;
-    private List<User> studentList;
+    private UltimateRecyclerView recyclerViewReqList;
+    private List<User> requestList;
     private DBHelper dbHelper;
     private DeptListAdapter listAdapter;
     private ImageView empty_state;
@@ -34,12 +34,11 @@ public class DepartmentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_department_hod);
-        recyclerViewReqList = (EmptyRecyclerView) findViewById(R.id.recyclerviewReqList);
-        empty_state = (ImageView) findViewById(R.id.empty_image_hod);
-        recyclerViewReqList.setEmptyView(findViewById(R.id.empty_image_hod));
+        recyclerViewReqList = (UltimateRecyclerView) findViewById(R.id.recyclerviewReqList);
+
         User user = new User();
-        studentList = new ArrayList<>();
-        listAdapter = new DeptListAdapter(studentList);
+        requestList = new ArrayList<>();
+        listAdapter = new DeptListAdapter(requestList);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewReqList.setLayoutManager(mLayoutManager);
@@ -59,8 +58,9 @@ public class DepartmentActivity extends AppCompatActivity {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                studentList.clear();
-                studentList.addAll(dbHelper.getAllUnapprovedStudent());
+                requestList.clear();
+                requestList.addAll(dbHelper.getAllUnapprovedStudent());
+                requestList.addAll(dbHelper.getAllUnapprovedTeacher());
                 return null;
             }
 

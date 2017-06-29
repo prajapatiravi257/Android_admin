@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,26 +14,43 @@
         android:orientation="horizontal"
         android:padding="10dp">
 
-        <TextView
-            android:id="@+id/usertype_name"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/userEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
             android:text="Teacher/Student"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/allow_user"
+            <TextView
+                android:id="@+id/usertype"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Allow"
-            />
+                android:text="type"
+                android:textColor="@color/md_blue_400"
+                android:textSize="20sp" />
+        </LinearLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/deny_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Deny" />
+            android:contentDescription="denyButton"
+            app:srcCompat="@drawable/ic_close_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/allow_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="allowButton"
+            android:text="Allow"
+            app:srcCompat="@drawable/ic_done_black_24dp" />
+
     </LinearLayout>
 </android.support.v7.widget.CardView>

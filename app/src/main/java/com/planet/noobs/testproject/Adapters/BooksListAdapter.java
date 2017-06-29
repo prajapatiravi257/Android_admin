@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.planet.noobs.testproject.R;
 
 import java.util.List;
@@ -15,15 +16,16 @@ import java.util.List;
  * Created by rio on 15/6/17.
  */
 
-public class BooksListAdapter extends RecyclerView.Adapter<BooksListAdapter.BookHolder> {
+public class BooksListAdapter extends UltimateViewAdapter<BooksListAdapter.BookHolder> {
     private List<String> mBook;
 
     public BooksListAdapter(List<String> books) {
         mBook = books;
     }
 
+
     @Override
-    public BookHolder onCreateViewHolder(ViewGroup parent, int i) {
+    public BookHolder onCreateViewHolder(ViewGroup parent) {
         View inflatedView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.books_list_item, parent, false);
         return new BookHolder(inflatedView);
@@ -35,9 +37,36 @@ public class BooksListAdapter extends RecyclerView.Adapter<BooksListAdapter.Book
     }
 
     @Override
-    public int getItemCount() {
+    public int getAdapterItemCount() {
         Log.v(BooksListAdapter.class.getSimpleName(), " " + mBook.size());
         return mBook.size();
+    }
+
+
+    @Override
+    public BookHolder newFooterHolder(View view) {
+        return null;
+    }
+
+    @Override
+    public BookHolder newHeaderHolder(View view) {
+        return null;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+        return null;
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+    }
+
+
+    @Override
+    public long generateHeaderId(int position) {
+        return 0;
     }
 
     public class BookHolder extends RecyclerView.ViewHolder {

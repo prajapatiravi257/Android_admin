@@ -11,7 +11,7 @@ public class User {
     private String email;
     private String passwd;
     private Long contact;
-
+    private String userType;
 
     public int getId() {
         return id;
@@ -51,5 +51,13 @@ public class User {
 
     public void setContact(Long contact) {
         this.contact = contact;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }

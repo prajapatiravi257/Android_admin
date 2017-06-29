@@ -6,9 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.planet.noobs.testproject.R;
+
+import java.util.HashMap;
 
 /**
  * Created by rio on 15/6/17.
@@ -20,6 +25,8 @@ public class StudentActivity extends AppCompatActivity implements View.OnClickLi
     private AppCompatButton buttonViewLectures;
     private AppCompatButton buttonViewIssuedBooks;
     private AppCompatTextView textViewGreetName;
+    private AppCompatTextView textViewEmail;
+    private SessionManagement session;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,6 +35,27 @@ public class StudentActivity extends AppCompatActivity implements View.OnClickLi
 
         initViews();
         initListeners();
+        session = new SessionManagement(getApplicationContext());
+        HashMap<String, String> user = session.getUserDetails();
+        String name = user.get(SessionManagement.KEY_NAME);
+        String email = user.get(SessionManagement.KEY_EMAIL);
+        textViewGreetName.setText(name);
+        textViewEmail.setText(email);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.menu.logout_menu) {
+            session.logoutUser();
+        }
+        return true;
     }
 
     @Override
@@ -39,7 +67,9 @@ public class StudentActivity extends AppCompatActivity implements View.OnClickLi
         buttonIssueBooks = (AppCompatButton) findViewById(R.id.btn_issue_books);
         buttonViewLectures = (AppCompatButton) findViewById(R.id.btn_lectures);
         buttonViewIssuedBooks = (AppCompatButton) findViewById(R.id.btn_viewIssuedBooks);
-        textViewGreetName = (AppCompatTextView) findViewById(R.id.welcome_logo);
+        textViewGreetName = (AppCompatTextView) findViewById(R.id.user_name_view);
+        textViewEmail = (AppCompatTextView) findViewById(R.id.email_view);
+
     }
 
     private void initListeners() {
@@ -63,6 +93,7 @@ public class StudentActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.btn_lectures:
                 Intent lecIntent = new Intent(this, TeacherActivity.class);
+                startActivity(lecIntent);
                 break;
 
         }
