@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="5dp"
+    card_view:cardElevation="5dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/hod_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="HOD"
+            android:textSize="20sp"
+
+            />
+
+        <ImageButton
+            android:id="@+id/deny_dept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="denyButton"
+            app:srcCompat="@drawable/ic_close_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/allow_dept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="allowButton"
+            android:text="Allow"
+            app:srcCompat="@drawable/ic_done_black_24dp" />
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
