@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
+import com.planet.noobs.testproject.Data.DBHelper;
 import com.planet.noobs.testproject.Model.User;
 import com.planet.noobs.testproject.R;
 
@@ -19,9 +21,12 @@ import java.util.List;
 
 public class AdminListAdapter extends UltimateViewAdapter<AdminListAdapter.AdminHolder> {
     private List<User> madmin;
+    private User user;
+    private DBHelper dbHelper;
 
     public AdminListAdapter(List<User> madmin) {
         this.madmin = madmin;
+        user = new User();
     }
 
     @Override
@@ -48,10 +53,33 @@ public class AdminListAdapter extends UltimateViewAdapter<AdminListAdapter.Admin
     }
 
     @Override
-    public void onBindViewHolder(AdminHolder holder, int position) {
-        holder.textViewHod.setText(madmin.get(position).toString());
-    }
+    public void onBindViewHolder(final AdminHolder holder, final int position) {
+        holder.textViewUserEmail.setText(madmin.get(position).getEmail());
+        holder.buttonDenyHod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dbHelper = new DBHelper(v.getContext());
+                user.setEmail(holder.textViewUserEmail.getText().toString());
 
+                    dbHelper.deleteDept(user);
+                    madmin.remove(position);
+                    notifyItemRemoved(position);
+                    Toast.makeText(v.getContext(),"User approved succesfully",Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.buttonApproveHod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dbHelper = new DBHelper(v.getContext());
+                user.setEmail(holder.textViewUserEmail.getText().toString());
+
+                dbHelper.approveDept(user);
+                madmin.remove(position);
+                notifyItemRemoved(position);
+                Toast.makeText(v.getContext(),"User approved succesfully",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
@@ -76,13 +104,13 @@ public class AdminListAdapter extends UltimateViewAdapter<AdminListAdapter.Admin
     public class AdminHolder extends RecyclerView.ViewHolder {
         private ImageButton buttonApproveHod;
         private ImageButton buttonDenyHod;
-        private TextView textViewHod;
+        private TextView textViewUserEmail;
 
         public AdminHolder(View itemView) {
             super(itemView);
             buttonApproveHod = (ImageButton) itemView.findViewById(R.id.allow_dept);
             buttonDenyHod = (ImageButton) itemView.findViewById(R.id.deny_dept);
-            textViewHod = (TextView) itemView.findViewById(R.id.hod_name);
+            textViewUserEmail = (TextView) itemView.findViewById(R.id.hod_name);
         }
     }
 

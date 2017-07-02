@@ -20,7 +20,10 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final String LOG_TAG = "SQL ";
+    public static final String LOG_TAG = DBHelper.class.getSimpleName();
+
+    private static final String APPROVED = "1";
+    private static final String UNAPPROVED = "0";
     //databse version
     private static final int DATABASE_VERSION = 1;
     //database name
@@ -166,7 +169,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Adds admin at the creation of the tables on Oncreate method
+    // Adds admin at the creation of the tables in Oncreate method
     private User addFirstAdmin() {
         User user = new User();
         user.setName("Admin");
@@ -175,6 +178,79 @@ public class DBHelper extends SQLiteOpenHelper {
         user.setPasswd("admin");
 
         return user;
+    }
+
+    /**
+     * resets password for user
+     * @param user
+     */
+    public void resetStudentPasswd(User user) {
+        SQLiteDatabase db = getWritableDatabase();
+        user = new User();
+        String email = user.getEmail();
+        String newPasswd = user.getPasswd();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STUDENT_PASSWORD,newPasswd);
+
+        String selection = COLUMN_STUDENT_EMAIL + " = ?" + " AND "
+                + COLUMN_STUDENT_APPROVAL + " = " + APPROVED;
+        String[] selection_args = {
+                email
+        };
+
+        db.update(TABLE_STUDENT,
+                values,
+                selection,
+                selection_args
+                );
+        db.close();
+    }
+
+    public void resetTeacherPasswd(User user) {
+        SQLiteDatabase db = getWritableDatabase();
+        user = new User();
+        String email = user.getEmail();
+        String newPasswd = user.getPasswd();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TEACHER_PASSWORD,newPasswd);
+
+        String selection = COLUMN_TEACHER_EMAIL + " = ?" + " AND "
+                + COLUMN_TEACHER_APPROVAL + " = " + APPROVED;
+        String[] selection_args = {
+                email
+        };
+
+        db.update(TABLE_TEACHER,
+                values,
+                selection,
+                selection_args
+        );
+        db.close();
+    }
+
+    public void resetDeptPasswd(User user) {
+        SQLiteDatabase db = getWritableDatabase();
+        user = new User();
+        String email = user.getEmail();
+        String newPasswd = user.getPasswd();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DEPT_PASSWORD,newPasswd);
+
+        String selection = COLUMN_DEPT_EMAIL + " = ?" + " AND "
+                + COLUMN_DEPT_APPROVAL + " = " + APPROVED;
+        String[] selection_args = {
+                email
+        };
+
+        db.update(TABLE_DEPT,
+                values,
+                selection,
+                selection_args
+        );
+        db.close();
     }
 
     /**
@@ -279,42 +355,27 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    /**
-     * This method is to delete student record
-     *
-     * @param user
-     */
     public void deleteStudent(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         // delete user record by id
-        db.delete(TABLE_STUDENT, COLUMN_STUDENT_ID + " = ?",
-                new String[]{String.valueOf(user.getId())});
+        db.delete(TABLE_STUDENT, COLUMN_STUDENT_EMAIL + " = ?",
+                new String[]{user.getEmail()});
         db.close();
     }
 
-    /**
-     * This method is to delete teacher record
-     *
-     * @param user
-     */
     public void deleteTeacher(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         // delete user record by id
-        db.delete(TABLE_TEACHER, COLUMN_TEACHER_ID + " = ?",
-                new String[]{String.valueOf(user.getId())});
+        db.delete(TABLE_TEACHER, COLUMN_TEACHER_EMAIL + " = ?",
+                new String[]{user.getEmail()});
         db.close();
     }
 
-    /**
-     * This method is to delete Departemnt member record
-     *
-     * @param user
-     */
     public void deleteDept(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         // delete user record by id
-        db.delete(TABLE_DEPT, COLUMN_DEPT_ID + " = ?",
-                new String[]{String.valueOf(user.getId())});
+        db.delete(TABLE_DEPT, COLUMN_DEPT_EMAIL + " = ?",
+                new String[]{user.getEmail()});
         db.close();
     }
 
@@ -436,25 +497,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return bookList;
     }
 
-    public void approveStudent(String email){
-        //open database with write permission
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_STUDENT_APPROVAL, 1);
-        String selection = COLUMN_STUDENT_EMAIL + " = ?";
-        //selection arguments
-        String[] selection_arg = {
-                email
-        };
-
-        db.update(TABLE_STUDENT,
-                values,
-                selection,
-                selection_arg);
-        db.close();
-    }
-
+    /**
+     * checks existing email
+     * @param email
+     * @return
+     */
     public boolean checkStudentEmail(String email) {
         //columns to be fetched
         String[] columns = {
@@ -463,7 +510,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         //selection criteria in where clause
-        String selection = COLUMN_STUDENT_EMAIL + " = ?" + " AND " + COLUMN_STUDENT_APPROVAL + " = 0";
+        String selection = COLUMN_STUDENT_EMAIL + " = ?" + " AND " + COLUMN_STUDENT_APPROVAL + " = "+APPROVED;
         //selection arguments
         String[] selection_arg = {
                 email
@@ -495,7 +542,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         //selection criteria in where clause
-        String selection = COLUMN_TEACHER_EMAIL + " = ?" + " AND " + COLUMN_TEACHER_APPROVAL + " = 0";
+        String selection = COLUMN_TEACHER_EMAIL + " = ?" + " AND " + COLUMN_TEACHER_APPROVAL + " = "+APPROVED;
         //selection arguments
         String[] selection_arg = {
                 email
@@ -526,7 +573,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         //selection criteria in where clause
-        String selection = COLUMN_DEPT_EMAIL + " = ?" + " AND " + COLUMN_DEPT_APPROVAL + " = 0";
+        String selection = COLUMN_DEPT_EMAIL + " = ?" + " AND " + COLUMN_DEPT_APPROVAL + " = "+APPROVED;
         //selection arguments
         String[] selection_arg = {
                 email
@@ -580,6 +627,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return count > 0;
     }
 
+    /**
+     * checks if user exist
+     ** @param email
+     * @param passwd
+     * @return
+     */
     public boolean checkStudent(String email, String passwd) {
         //columns to be fetched
         String[] columns = {
@@ -590,7 +643,7 @@ public class DBHelper extends SQLiteOpenHelper {
         //selection criteria in where clause
         String selection = COLUMN_STUDENT_EMAIL + " = ?" + " AND " +
                 COLUMN_STUDENT_PASSWORD + " = ?" + " AND " +
-                COLUMN_STUDENT_APPROVAL + " = 0";
+                COLUMN_STUDENT_APPROVAL + " = "+APPROVED;
         //selection arguments
         String[] selection_arg = {
                 email,
@@ -625,7 +678,7 @@ public class DBHelper extends SQLiteOpenHelper {
         //selection criteria in where clause
         String selection = COLUMN_DEPT_EMAIL + " = ?" + " AND " +
                 COLUMN_DEPT_PASSWORD + " = ?" + " AND " +
-                COLUMN_DEPT_APPROVAL + " = 1";
+                COLUMN_DEPT_APPROVAL + " = "+APPROVED;
         //selection arguments
         String[] selection_arg = {
                 email,
@@ -660,8 +713,8 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         //selection criteria in where clause
         String selection = COLUMN_TEACHER_EMAIL + " = ?" + " AND " +
-                COLUMN_TEACHER_EMAIL + " = ?" + " AND " +
-                COLUMN_TEACHER_APPROVAL + " = 1";
+                COLUMN_TEACHER_PASSWORD + " = ?" + " AND " +
+                COLUMN_TEACHER_APPROVAL + " = "+APPROVED;
         //selection arguments
         String[] selection_arg = {
                 email,
@@ -696,7 +749,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         //selection criteria in where clause
         String selection = COLUMN_ADMIN_EMAIL + " = ?" + " AND " +
-                COLUMN_ADMIN_EMAIL + " = ?";
+                COLUMN_ADMIN_PASSWORD + " = ?";
         //selection arguments
         String[] selection_arg = {
                 email,
@@ -720,6 +773,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return count > 0;
     }
 
+    /**
+     * retrive's all the unapproved users
+     * @return
+     */
     public List<User> getAllUnapprovedStudent() {
         //columns to be fetched
         String[] columns = {
@@ -728,7 +785,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         List<User> userList = new ArrayList<User>();
 
-        String selection = COLUMN_STUDENT_APPROVAL + " = 0";
+        String selection = COLUMN_STUDENT_APPROVAL + " = "+UNAPPROVED;
         String sortOrder = COLUMN_STUDENT_EMAIL + " ASC";
         Cursor cursor = db.query(
                 TABLE_STUDENT,
@@ -761,7 +818,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         List<User> userList = new ArrayList<User>();
 
-        String selection = COLUMN_TEACHER_APPROVAL + " = 0";
+        String selection = COLUMN_TEACHER_APPROVAL + " = "+UNAPPROVED;
         String sortOrder = COLUMN_TEACHER_EMAIL + " ASC";
         Cursor cursor = db.query(
                 TABLE_TEACHER,
@@ -794,7 +851,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         List<User> userList = new ArrayList<User>();
 
-        String selection = COLUMN_DEPT_APPROVAL + " = 0";
+        String selection = COLUMN_DEPT_APPROVAL + " = "+ UNAPPROVED;
         String sortOrder = COLUMN_DEPT_EMAIL + " ASC";
         Cursor cursor = db.query(
                 TABLE_DEPT,
@@ -818,5 +875,71 @@ public class DBHelper extends SQLiteOpenHelper {
         return userList;
     }
 
+    /**
+     * approve function for admin's
+     * @param user
+     */
+    public void approveStudent(User user){
+        //open database with write permission
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STUDENT_APPROVAL, APPROVED);
+        String email = user.getEmail();
+        String selection = COLUMN_STUDENT_EMAIL + " = ?";
+        //selection arguments
+        String[] selection_arg = {
+                email
+        };
+
+        db.update(TABLE_STUDENT,
+                values,
+                selection,
+                selection_arg);
+        db.close();
+    }
+
+    public void approveTeacher(User user) {
+        //open database with write permission
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TEACHER_APPROVAL, APPROVED);
+        String email = user.getEmail();
+
+        String selection = COLUMN_TEACHER_EMAIL + " = ?";
+        //selection arguments
+        String[] selection_arg = {
+                email
+        };
+
+        db.update(TABLE_TEACHER,
+                values,
+                selection,
+                selection_arg);
+        db.close();
+    }
+
+    public void approveDept(User user) {
+        //open database with write permission
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DEPT_APPROVAL, APPROVED);
+        String email = user.getEmail();
+        String selection = COLUMN_DEPT_EMAIL + " = ?";
+        //selection arguments
+        String[] selection_arg = {
+                email
+        };
+
+        db.update(TABLE_DEPT,
+                values,
+                selection,
+                selection_arg);
+
+        Log.v(LOG_TAG, "approveDept() working!!");
+        db.close();
+    }
 
 }

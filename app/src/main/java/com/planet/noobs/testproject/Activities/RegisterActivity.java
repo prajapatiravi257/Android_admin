@@ -135,15 +135,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (!inputValidation.isInputEditTextFilled(textInputEditTextContact, textInputLayoutContact, getString(R.string.error_field_required))) {
             return;
         }
-        if (!inputValidation.isInputEditTextFilled(textInputEditTextPasswd, textInputLayoutPasswd, getString(R.string.error_field_required))) {
+        if (!inputValidation.isValidMobile(textInputEditTextContact, textInputLayoutContact, "Not a vaild mobile number")) {
             return;
         }
 
+        if (!inputValidation.isInputEditTextFilled(textInputEditTextPasswd, textInputLayoutPasswd, getString(R.string.error_field_required))) {
+            return;
+        }
         if (!inputValidation.isInputEditTextMatches(textInputEditTextPasswd, textInputEditTextConfirmPasswd,
                 textInputLayoutConfirmPasswd, "Password Don't match!")) {
             return;
         }
-        //registration bug for existing email id in other tables
+        if(!inputValidation.isPasswordvalid(textInputEditTextPasswd, textInputLayoutPasswd)){
+            return;
+        }
 
         if (!dbHelper.checkStudentEmail(textInputEditTextEmail.getText().toString().trim()) &&
                 !dbHelper.checkTeacherEmail(textInputEditTextEmail.getText().toString().trim()) &&
@@ -151,7 +156,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 !dbHelper.checkAdminEmail(textInputEditTextEmail.getText().toString().trim())) {
 
             user.setContact(Long.parseLong(textInputEditTextContact.getText().toString().trim()));
-            user.setEmail(textInputEditTextEmail.getText().toString().trim());
+            user.setEmail(textInputEditTextEmail.getText().toString().toLowerCase().trim());
             user.setName(textInputEditTextName.getText().toString().trim());
             user.setPasswd(textInputEditTextPasswd.getText().toString().trim());
 

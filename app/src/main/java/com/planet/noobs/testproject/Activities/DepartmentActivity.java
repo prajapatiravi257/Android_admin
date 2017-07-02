@@ -7,7 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.planet.noobs.testproject.Adapters.DeptListAdapter;
@@ -29,7 +33,7 @@ public class DepartmentActivity extends AppCompatActivity {
     private DBHelper dbHelper;
     private DeptListAdapter listAdapter;
     private ImageView empty_state;
-
+    private SessionManagement session;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +41,8 @@ public class DepartmentActivity extends AppCompatActivity {
         recyclerViewReqList = (UltimateRecyclerView) findViewById(R.id.recyclerviewReqList);
 
         User user = new User();
+        session = new SessionManagement(getApplicationContext());
+
         requestList = new ArrayList<>();
         listAdapter = new DeptListAdapter(requestList);
 
@@ -48,6 +54,23 @@ public class DepartmentActivity extends AppCompatActivity {
 
         recyclerViewReqList.setAdapter(listAdapter);
         getDataFromSQLite();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_logout:
+                Toast.makeText(getApplicationContext(),"Logging out...",Toast.LENGTH_SHORT).show();
+                session.logoutUser();
+                return  true;
+        }
+        return  true;
     }
 
     /**

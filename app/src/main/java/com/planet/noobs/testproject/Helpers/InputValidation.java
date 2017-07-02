@@ -67,7 +67,34 @@ public class InputValidation {
         return true;
     }
 
+    public boolean isPasswordvalid(TextInputEditText textInputEditText, TextInputLayout textInputLayout){
+    String value = textInputEditText.getText().toString().trim();
+    if(value.length() < 4){
+        textInputLayout.setError("Password is to short, try more then 4 characters");
+        hideKeyboardFrom(textInputLayout);
+        return false;
+    }else if (value.length() > 10){
+        textInputLayout.setError("Password should not exceed limit of 10");
+        hideKeyboardFrom(textInputLayout);
+        return false;
+    }else {
+        textInputLayout.setErrorEnabled(false);
+    }
+    return true;
+    }
 
+    public boolean isValidMobile(TextInputEditText textInputEditText, TextInputLayout textInputLayout, String message) {
+        String value = textInputEditText.getText().toString().trim();
+        String mobilePattern = "[0-9]{10}";
+        if(!value.matches(mobilePattern)){
+            textInputLayout.setError(message);
+            hideKeyboardFrom(textInputLayout);
+            return false;
+        }else {
+            textInputLayout.setErrorEnabled(false);
+        }
+        return true;
+    }
     private void hideKeyboardFrom(View view) {
         InputMethodManager input = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         input.hideSoftInputFromWindow(view.getWindowToken(), WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);

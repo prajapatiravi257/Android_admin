@@ -1,12 +1,12 @@
 package com.planet.noobs.testproject.Adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.planet.noobs.testproject.Data.DBHelper;
@@ -27,6 +27,7 @@ public class DeptListAdapter extends UltimateViewAdapter<DeptListAdapter.DeptHol
 
     public DeptListAdapter(List<User> mdept) {
         this.mdept = mdept;
+        user = new User();
     }
 
     @Override
@@ -52,29 +53,65 @@ public class DeptListAdapter extends UltimateViewAdapter<DeptListAdapter.DeptHol
         return null;
     }
 
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position, List<User> reqList);
+    }
+
+
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
 
     }
 
     @Override
-    public void onBindViewHolder(DeptHolder holder, int position) {
+    public void onBindViewHolder(final DeptHolder holder, final int position) {
         holder.textViewUserType.setText(mdept.get(position).getUserType());
         holder.textViewUserEmail.setText(mdept.get(position).getEmail());
-        user = new User();
+        holder.buttonDeny.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                dbHelper = new DBHelper(v.getContext());
+
+                user.setEmail(holder.textViewUserEmail.getText().toString());
+                if (holder.textViewUserType.getText().toString().equals("Student")) {
+                    dbHelper.deleteStudent(user);
+                    mdept.remove(position);
+                    notifyItemRemoved(position);
+                    Toast.makeText(v.getContext(),"User approved succesfully",Toast.LENGTH_SHORT).show();
+                } else {
+                    dbHelper.deleteTeacher(user);
+                    mdept.remove(position);
+                    notifyItemRemoved(position);
+                    Toast.makeText(v.getContext(),"User approved succesfully",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         holder.buttonAllow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v(LOG_TAG, "Button allow clicked!");
-            }
-        });
-        holder.buttonDeny.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+                dbHelper = new DBHelper(v.getContext());
+
+                user.setEmail(holder.textViewUserEmail.getText().toString());
+                if (holder.textViewUserType.getText().toString().equals("Student")) {
+                    dbHelper.approveStudent(user);
+                    mdept.remove(position);
+                    notifyItemRemoved(position);
+                    Toast.makeText(v.getContext(),"User approved succesfully",Toast.LENGTH_SHORT).show();
+
+                } else {
+                    dbHelper.approveTeacher(user);
+                    mdept.remove(position);
+                    notifyItemRemoved(position);
+                    Toast.makeText(v.getContext(),"User approved succesfully",Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
     }
+
 
 
     @Override
@@ -99,6 +136,8 @@ public class DeptListAdapter extends UltimateViewAdapter<DeptListAdapter.DeptHol
             textViewUserType = (TextView) itemView.findViewById(R.id.usertype);
             buttonAllow = (ImageButton) itemView.findViewById(R.id.allow_user);
             buttonDeny = (ImageButton) itemView.findViewById(R.id.deny_user);
+
         }
+
     }
 }

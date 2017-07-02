@@ -103,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_signin:
-                //login usertype with spinners
                 verifyFromDB();
                 break;
             case R.id.textViewRegister:
@@ -128,45 +127,56 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         email = textInputEditTextEmail.getText().toString().trim();
         name = email.substring(0, email.indexOf("@"));
 
-        if (spinner_login.getSelectedItemPosition() == 0 && dbHelper.checkStudent(email,
-                textInputEditTextPasswd.getText().toString().trim())) {
+        switch (spinner_login.getSelectedItemPosition()) {
+            case 0:
+                if (dbHelper.checkStudent(email,
+                        textInputEditTextPasswd.getText().toString().trim())) {
 
-            session.createLoginSession(name, email);
-            emptyInputEditText();
+                    session.createLoginSession(name, email);
+                    emptyInputEditText();
 
-            Intent studentIntent = new Intent(getApplicationContext(), StudentActivity.class);
-            startActivity(studentIntent);
-            Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
+                    Intent studentIntent = new Intent(getApplicationContext(), StudentActivity.class);
+                    startActivity(studentIntent);
+                    Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case 1:
+                if (dbHelper.checkTeacher(email,
+                        textInputEditTextPasswd.getText().toString().trim())) {
 
-        } else if (spinner_login.getSelectedItemPosition() == 1 && dbHelper.checkTeacher(email,
-                textInputEditTextPasswd.getText().toString().trim())) {
+                    session.createLoginSession(name, email);
+                    Intent teacherIntent = new Intent(getApplicationContext(), TeacherActivity.class);
+                    startActivity(teacherIntent);
+                    emptyInputEditText();
+                    Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case 2:
+                if (dbHelper.checkDept(email,
+                        textInputEditTextPasswd.getText().toString().trim())) {
 
-            session.createLoginSession(name, email);
-            emptyInputEditText();
-            Intent teacherIntent = new Intent(getApplicationContext(), TeacherActivity.class);
-            startActivity(teacherIntent);
-            Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
+                    session.createLoginSession(name, email);
+                    Intent deptIntent = new Intent(getApplicationContext(), DepartmentActivity.class);
+                    startActivity(deptIntent);
+                    emptyInputEditText();
+                    Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case 3:
+                if (dbHelper.checkAdmin(email,
+                    textInputEditTextPasswd.getText().toString().trim())) {
 
-        } else if (spinner_login.getSelectedItemPosition() == 2 && dbHelper.checkDept(email,
-                textInputEditTextPasswd.getText().toString().trim())) {
-
-            session.createLoginSession(name, email);
-            emptyInputEditText();
-            Intent deptIntent = new Intent(getApplicationContext(), DepartmentActivity.class);
-            startActivity(deptIntent);
-            Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
-
-        } else if (spinner_login.getSelectedItemPosition() == 3 && dbHelper.checkAdmin(email,
-                textInputEditTextPasswd.getText().toString().trim())) {
-
-            session.createLoginSession(name, email);
-            emptyInputEditText();
-            Intent adminIntent = new Intent(getApplicationContext(), AdminActivity.class);
-            startActivity(adminIntent);
-            Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
-        } else {
-            Snackbar.make(scrollView, "Credentials not valid", Snackbar.LENGTH_SHORT).show();
+                session.createLoginSession(name, email);
+                Intent adminIntent = new Intent(getApplicationContext(), AdminActivity.class);
+                startActivity(adminIntent);
+                emptyInputEditText();
+                Snackbar.make(scrollView, "Logged in successfully", Snackbar.LENGTH_LONG).show();
+            }
+            break;
         }
+
+        Snackbar.make(scrollView, "Credentials not valid", Snackbar.LENGTH_SHORT).show();
+
     }
 
 

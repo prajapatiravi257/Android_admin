@@ -2,7 +2,6 @@ package com.planet.noobs.testproject.Activities;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,7 +10,11 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -38,12 +41,13 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
     private DBHelper dbHelper;
     private InputValidation inputValidation;
     private AddFloatingActionButton floatingActionButton;
-
+    private SessionManagement session;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
+        session = new SessionManagement(getApplicationContext());
         initViews();
         initListners();
         initObjects();
@@ -60,6 +64,24 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
             }
         });*/
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_logout:
+                Toast.makeText(getApplicationContext(),"Logging out...",Toast.LENGTH_SHORT).show();
+                session.logoutUser();
+                return  true;
+        }
+        return  true;
     }
 
     private void initViews() {
@@ -83,18 +105,13 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
         recyclerViewHods.setHasFixedSize(true);
         recyclerViewHods.setAdapter(adminListAdapter);
         getDataFromSQLite();
-        recyclerViewHods.setParallaxHeader(getLayoutInflater().inflate(R.layout.parallax_recyclerview_header, recyclerViewHods.mRecyclerView, false));
+        //recyclerViewHods.setParallaxHeader(getLayoutInflater().inflate(R.layout.parallax_recyclerview_header, recyclerViewHods.mRecyclerView, false));
 
         recyclerViewHods.setDefaultOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        getDataFromSQLite();
-                        recyclerViewHods.setRefreshing(false);
-                    }
-                }, 1000);
+                getDataFromSQLite();
+                recyclerViewHods.setRefreshing(false);
             }
         });
     }

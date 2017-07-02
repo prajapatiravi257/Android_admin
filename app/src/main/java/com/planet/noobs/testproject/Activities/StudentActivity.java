@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.planet.noobs.testproject.R;
 
@@ -39,6 +40,7 @@ public class StudentActivity extends AppCompatActivity implements View.OnClickLi
         HashMap<String, String> user = session.getUserDetails();
         String name = user.get(SessionManagement.KEY_NAME);
         String email = user.get(SessionManagement.KEY_EMAIL);
+
         textViewGreetName.setText(name);
         textViewEmail.setText(email);
     }
@@ -52,10 +54,13 @@ public class StudentActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.menu.logout_menu) {
-            session.logoutUser();
+        switch (item.getItemId()){
+            case R.id.action_logout:
+                Toast.makeText(getApplicationContext(),"Logging out...",Toast.LENGTH_SHORT).show();
+                session.logoutUser();
+                return  true;
         }
-        return true;
+        return  true;
     }
 
     @Override
